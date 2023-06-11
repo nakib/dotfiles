@@ -4,6 +4,8 @@
 			 ("melpa" . "https://melpa.org/packages/")
 			 ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
+;;This will make startup slow. Need to do this once anyway.
+;;Better to call it with M-x package-refresh-contents.
 ;(package-refresh-contents)
 
 ;; Don't show startup screen
@@ -116,7 +118,7 @@
 ; Need to do this: pip3 install python-lsp-server
 (package-install 'lsp-mode)
 (require 'lsp-mode)
-(add-hook 'python-mode-hook #'lsp)
+(add-hook 'python-mode-hook #'lsp-deferred)
 (setq lsp-eldoc-render-all t)
 ;; Set shortcut for M-x eldoc-doc-buffer
 (add-hook 'lsp-mode-hook
