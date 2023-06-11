@@ -1,0 +1,149 @@
+;; Allow package manager to use Melpa
+(require 'package)
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+			 ("melpa" . "https://melpa.org/packages/")
+			 ("melpa-stable" . "https://stable.melpa.org/packages/")))
+(package-initialize)
+;(package-refresh-contents)
+
+;; Don't show startup screen
+(setq inhibit-startup-screen t)
+
+;; Set scratch buffer message
+(setq initial-scratch-message
+      ";; This is your scratch space. Nothing here will be saved. Go nuts!!\n")
+
+;; Set zoom level
+(set-face-attribute 'default nil :height 148)
+
+;; Remove tool bar
+(tool-bar-mode 0)
+
+;; Stop cursor for blinking
+(blink-cursor-mode 0)
+
+;; Show both row and column numbers at the bottom in the mode line
+(column-number-mode 1)
+
+;; Nice line wrap
+(global-visual-line-mode 1)
+
+;; Go to address at point
+(global-set-key (kbd "C-c <RET>") 'goto-address-at-point)
+
+;; Allow overwriting region by selecting and inserting text
+(delete-selection-mode 1)
+
+;; Jump to last cursor location when file is opened
+(save-place-mode 1)
+
+;; Enable recent file mode and set shortcut
+(recentf-mode 1)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+
+;; Enable Hippie-exapand and replace M-/ to call it instead of dynamic expand
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+;; Enable case-insensitive search
+(setq case-fold-search t)
+
+;; Set theme
+;; Did this by invoking M-x customize-themes and choosing the wheatgrass theme.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(custom-enabled-themes '(wheatgrass))
+ '(ispell-dictionary nil)
+ '(package-selected-packages '(lsp-mode pyvenv slime cmake-mode eglot company)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; Set default transparency which can be toggled with C-c t
+;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(85 . 70))
+(add-to-list 'default-frame-alist '(alpha . (85 . 70)))
+(defun toggle-transparency ()
+  ;; Toggle transparency
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
+
+;; Set default tmp file directory
+(setq backup-directory-alist 
+      '(("." . "~/.emacs.d/file-backups")))
+
+;; Define shortcuts for window resize
+(global-set-key (kbd "C-c <C-left>") 'shrink-window-horizontally)
+(global-set-key (kbd "C-c <C-right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "C-c <C-down>") 'shrink-window)
+(global-set-key (kbd "C-c <C-up>") 'enlarge-window)
+
+;; org-mode mode related config
+;;
+;;;;
+
+;; LaTex mode related config
+;;
+;;;;
+
+;; Company mode (for code completion)
+(package-install 'company)
+(global-company-mode t)
+(add-hook 'after-init-hook 'global-company-mode)
+;;
+
+;; Python lsp using lsp-mode
+; Need to do this: pip3 install python-lsp-server
+(package-install 'lsp-mode)
+(require 'lsp-mode)
+(add-hook 'python-mode-hook #'lsp)
+(setq lsp-eldoc-render-all t)
+;; Set shortcut for M-x eldoc-doc-buffer
+(add-hook 'lsp-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-h <SPC>") 'eldoc-doc-buffer)))
+
+;;; Python lsp using company+eglot
+;;; Source: https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/
+;;; Need a python lsp: pip3 install 'python-language-server[all]'
+;
+;(package-install 'eglot)
+;(require 'eglot)
+;
+;(define-key eglot-mode-map (kbd "C-c <tab>") #'company-complete) ; initiate the completion manually
+;(define-key eglot-mode-map (kbd "C-c e f n") #'flymake-goto-next-error)
+;(define-key eglot-mode-map (kbd "C-c e f p") #'flymake-goto-prev-error)
+;(define-key eglot-mode-map (kbd "C-c e r") #'eglot-rename)
+;
+;(setq eldoc-echo-area-use-multiline-p nil)
+;(add-to-list 'display-buffer-alist
+;             '("^\\*eldoc for" display-buffer-at-bottom
+;               (window-height . 4)))
+;
+
+;;; python venv for LSP
+;;; How to create an environment: python3 -m venv ~/python3-workspace/virtualenv
+(package-install 'pyvenv)
+(pyvenv-activate "~/python3-workspace/virtualenv/")
+
+
