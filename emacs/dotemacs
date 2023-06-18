@@ -123,7 +123,8 @@
 (setq org-hide-leading-stars t)
 
 (setq org-todo-keywords
-      '((sequence "SOMEDAY(s)" "NEXT(n)" "TODO(n)" "IN-PROGRESS(i)" "VERIFY(v)" "WAITING(w)" "|" "DONE(d)" "DELEGATED(-)" "CANCELLED(c)")))
+      '((sequence "SOMEDAY(s)" "NEXT(n)" "TODO(n)" "IN-PROGRESS(i)" "|" "DONE(d)")
+	(sequence "WAITING(w@/!)" "DELEGATED(-@/!)" "|" "CANCELLED(c@/!)")))
 
 (setq org-tag-persistent-alist
 		'((:startgroup . nil)
