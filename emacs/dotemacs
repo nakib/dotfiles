@@ -8,6 +8,10 @@
 ;;Better to call it with M-x package-refresh-contents.
 ;(package-refresh-contents)
 
+;; Install use-package
+(package-install 'use-package)
+(require 'use-package)
+
 ;; Don't show startup screen
 (setq inhibit-startup-screen t)
 
@@ -29,6 +33,9 @@
 
 ;; Nice line wrap
 (global-visual-line-mode 1)
+
+;; Highlight matcing parens
+(show-paren-mode 1)
 
 ;; Go to address at point
 (global-set-key (kbd "C-c <RET>") 'goto-address-at-point)
@@ -60,9 +67,16 @@
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(connection-local-criteria-alist
+   '(((:application eshell)
+      eshell-connection-default-profile)) t)
+ '(connection-local-profile-alist
+   '((eshell-connection-default-profile
+      (eshell-path-env-list))) t)
  '(custom-enabled-themes '(wheatgrass))
  '(ispell-dictionary nil)
- '(package-selected-packages '(lsp-mode pyvenv slime cmake-mode eglot company)))
+ '(package-selected-packages
+   '(org-bullets yasnippet org-ai lsp-mode pyvenv slime cmake-mode eglot company)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -101,7 +115,35 @@
 (global-set-key (kbd "C-c <C-up>") 'enlarge-window)
 
 ;; org-mode mode related config
-;;
+(setq org-ellipsis "⤦")
+
+(use-package org-bullets :ensure t)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+(setq org-hide-leading-stars t)
+
+(setq org-todo-keywords
+      '((sequence "SOMEDAY(s)" "NEXT(n)" "TODO(n)" "IN-PROGRESS(i)" "VERIFY(v)" "WAITING(w)" "|" "DONE(d)" "DELEGATED(-)" "CANCELLED(c)")))
+
+(setq org-tag-persistent-alist
+		'((:startgroup . nil)
+		  ("PERSONAL" . ?p)
+		  ("WORK" . ?w)
+		  (:endgroup . nil)
+		  (:startgroup . nil)
+		  ("DOCTOR" . ?d)
+		  ("REIMBURSEMENT" . ?r)
+		  ("BUREAUCRACY" . ?b)
+		  ("TRAVEL" . ?t)
+		  (:endgroup . nil)
+		  (:startgroup . nil)
+		  ("SHORTTERM" . ?s)
+		  ("MEDIUMTERM" . ?m)
+		  ("LONGTERM" . ?l)
+		  (:endgroup . nil)))
+
+;; Implementation of Nickolas Lanasa's system
+;; Source: https://www.youtube.com/watch?v=oG9jP0SsPqQ
 ;;;;
 
 ;; LaTex mode related config
@@ -113,6 +155,11 @@
 (global-company-mode t)
 (add-hook 'after-init-hook 'global-company-mode)
 ;;
+
+;; Yasnippet
+;(package-install 'yasnippet)
+;(require 'yasnippet)
+;(yas-global-mode 1)
 
 ;; Python lsp using lsp-mode
 ; Need to do this: pip3 install python-lsp-server
@@ -147,5 +194,3 @@
 ;;; How to create an environment: python3 -m venv ~/python3-workspace/virtualenv
 (package-install 'pyvenv)
 (pyvenv-activate "~/python3-workspace/virtualenv/")
-
-
