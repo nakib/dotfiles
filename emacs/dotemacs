@@ -76,7 +76,7 @@
  '(custom-enabled-themes '(wheatgrass))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(org-bullets yasnippet org-ai lsp-mode pyvenv slime cmake-mode eglot company)))
+   '(auctex org-bullets yasnippet org-ai lsp-mode pyvenv slime cmake-mode eglot company)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -148,7 +148,7 @@
 ;;;;
 
 ;; LaTex mode related config
-;;
+(package-install 'auctex)
 ;;;;
 
 ;; Company mode (for code completion)
