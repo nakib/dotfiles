@@ -1,3 +1,7 @@
+;; For this bug (on the old emacs v26.1 on SOL45):
+;; https://lists.gnu.org/archive/html/help-gnu-emacs/2020-01/msg00164.html
+;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 ;; Allow package manager to use Melpa
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
@@ -68,21 +72,24 @@
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(connection-local-criteria-alist
-   '(((:application eshell)
-      eshell-connection-default-profile)) t)
+   (quote
+    (((:application eshell)
+      eshell-connection-default-profile))) t)
  '(connection-local-profile-alist
-   '((eshell-connection-default-profile
-      (eshell-path-env-list))) t)
- '(custom-enabled-themes '(wheatgrass))
+   (quote
+    ((eshell-connection-default-profile
+      (eshell-path-env-list)))) t)
+ '(custom-enabled-themes (quote (wheatgrass)))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(auctex org-bullets yasnippet org-ai lsp-mode pyvenv slime cmake-mode eglot company)))
+   (quote
+    (auctex org-bullets lsp-mode slime cmake-mode eglot company))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 148 :width normal)))))
 
 ;; Set default transparency which can be toggled with C-c t
 ;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
@@ -162,16 +169,20 @@
 ;(require 'yasnippet)
 ;(yas-global-mode 1)
 
+;; LSP common settings
+(require 'lsp-mode)
+(setq lsp-eldoc-render-all t)
+;;  Set shortcut for M-x eldoc-doc-buffer
+(add-hook 'lsp-mode-hook
+ 	  (lambda ()
+ 	    (local-set-key (kbd "C-h <SPC>") 'eldoc-doc-buffer)))
+
+;;;  Fortran
+(add-hook 'f90-mode-hook #'lsp-deferred)
+
 ;; Python lsp using lsp-mode
 ; Need to do this: pip3 install python-lsp-server
-(package-install 'lsp-mode)
-(require 'lsp-mode)
-(add-hook 'python-mode-hook #'lsp-deferred)
-(setq lsp-eldoc-render-all t)
-;; Set shortcut for M-x eldoc-doc-buffer
-(add-hook 'lsp-mode-hook
-	  (lambda ()
-	    (local-set-key (kbd "C-h <SPC>") 'eldoc-doc-buffer)))
+;(add-hook 'python-mode-hook #'lsp-deferred)
 
 ;;; Python lsp using company+eglot
 ;;; Source: https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/
@@ -193,5 +204,5 @@
 
 ;;; python venv for LSP
 ;;; How to create an environment: python3 -m venv ~/python3-workspace/virtualenv
-(package-install 'pyvenv)
-(pyvenv-activate "~/python3-workspace/virtualenv/")
+;(package-install 'pyvenv)
+;(pyvenv-activate "~/python3-workspace/virtualenv/")
