@@ -178,7 +178,15 @@
  	    (local-set-key (kbd "C-h <SPC>") 'eldoc-doc-buffer)))
 
 ;;;  Fortran
+; First need to do this: pip3 install fortls
 (add-hook 'f90-mode-hook #'lsp-deferred)
+
+;;; C/C++
+; First need to install:
+; sudo apt-get install clangd-15
+; sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-15 100
+(add-hook 'c-mode-hook 'lsp #'lsp-deferred)
+(add-hook 'c++-mode-hook 'lsp #'lsp-deferred)
 
 ;; Python lsp using lsp-mode
 ; Need to do this: pip3 install python-lsp-server
