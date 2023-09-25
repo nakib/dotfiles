@@ -12,6 +12,13 @@
 ;;Better to call it with M-x package-refresh-contents.
 ;(package-refresh-contents)
 
+;; Get quelpa [https://github.com/quelpa/quelpa]
+(unless (package-installed-p 'quelpa)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
+
 ;; Install use-package
 (package-install 'use-package)
 (require 'use-package)
@@ -180,6 +187,18 @@
 ;;;  Fortran
 ; First need to do this: pip3 install fortls
 (add-hook 'f90-mode-hook #'lsp-deferred)
+
+;;; Julia
+;; Instructions from https://hershsingh.net/blog/emacs-julia/
+(quelpa '(lsp-julia :fetcher github
+                    :repo "non-Jedi/lsp-julia"
+                    :files (:defaults "languageserver")))
+
+(use-package lsp-julia
+  :config
+  (setq lsp-julia-default-environment "~/.julia/environments/v1.9.2"))
+
+(add-hook 'julia-mode-hook #'lsp-deferred)
 
 ;;; C/C++
 ; First need to install:
