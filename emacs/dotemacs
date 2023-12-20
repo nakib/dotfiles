@@ -2,15 +2,22 @@
 ;; https://lists.gnu.org/archive/html/help-gnu-emacs/2020-01/msg00164.html
 ;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-;; Allow package manager to use Melpa
-(require 'package)
+;; Set package archives
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
 			 ("melpa-stable" . "https://stable.melpa.org/packages/")))
-(package-initialize)
-;;This will make startup slow. Need to do this once anyway.
-;;Better to call it with M-x package-refresh-contents.
-;(package-refresh-contents)
+
+;; Make sure use-package is always used
+;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
+(condition-case nil
+    (require 'use-package)
+  (file-error
+   (require 'package)
+   (package-initialize)
+   (package-refresh-contents)
+   (package-install 'use-package)
+   (setq use-package-always-ensure t)
+   (require 'use-package)))
 
 ;; Get quelpa [https://github.com/quelpa/quelpa]
 (unless (package-installed-p 'quelpa)
@@ -19,9 +26,7 @@
     (eval-buffer)
     (quelpa-self-upgrade)))
 
-;; Install use-package
-(package-install 'use-package)
-(require 'use-package)
+;;;;;;;;;;;;;;;;;; begin visual jazz ;;;;;;;;;;;;;;;;;;
 
 ;; Don't show startup screen
 (setq inhibit-startup-screen t)
@@ -68,35 +73,7 @@
 (setq case-fold-search t)
 
 ;; Set theme
-;; Did this by invoking M-x customize-themes and choosing the wheatgrass theme.
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(connection-local-criteria-alist
-   (quote
-    (((:application eshell)
-      eshell-connection-default-profile))) t)
- '(connection-local-profile-alist
-   (quote
-    ((eshell-connection-default-profile
-      (eshell-path-env-list)))) t)
- '(custom-enabled-themes (quote (wheatgrass)))
- '(ispell-dictionary nil)
- '(package-selected-packages
-   (quote
-    (auctex org-bullets lsp-mode slime cmake-mode eglot company))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 148 :width normal)))))
+;; Did this by invoking M-x customize-themes and choosing the modus-vivendi theme.
 
 ;; Set default transparency which can be toggled with C-c t
 ;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
@@ -128,9 +105,45 @@
 (global-set-key (kbd "C-c <C-down>") 'shrink-window)
 (global-set-key (kbd "C-c <C-up>") 'enlarge-window)
 
+;; Nerd icons
+;; Source: https://github.com/rainstormstudio/nerd-icons.el
+;; Need to install the fonts first by saying:
+;; M-x package-install nerd-icons-install-fonts
+(use-package nerd-icons
+  :ensure t
+  ;; :custom
+  ;; The Nerd Font you want to use in GUI
+  ;; "Symbols Nerd Font Mono" is the default and is recommended
+  ;; but you can use any other Nerd Font if you want
+  ;; (nerd-icons-font-family "Symbols Nerd Font Mono")
+  )
+
+;; Doom modeline
+;; Source https://github.com/seagle0128/doom-modeline
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
+;; Beacon mode
+(use-package beacon
+  :ensure t
+  :init (beacon-mode 1))
+(setq beacon-color "#237fd2")
+
+;; Show a pulse light when switching windows, or switching focus to
+;; the minibuffer.
+;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
+(require 'pulse)
+(set-face-attribute 'pulse-highlight-start-face nil :background beacon-color)
+(add-hook 'window-selection-change-functions
+          (lambda (frame)
+            (when (eq frame (selected-frame))
+              (pulse-momentary-highlight-one-line))))
+
+;;;;;;;;;;;;;;;;;; end visual jazz ;;;;;;;;;;;;;;;;;;
+
 ;; org-mode mode related config
 (setq org-ellipsis "⤦")
-
 (use-package org-bullets :ensure t)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
@@ -172,9 +185,9 @@
 ;;
 
 ;; Yasnippet
-;(package-install 'yasnippet)
-;(require 'yasnippet)
-;(yas-global-mode 1)
+(package-install 'yasnippet)
+(require 'yasnippet)
+(yas-global-mode 1)
 
 ;; LSP common settings
 (require 'lsp-mode)
@@ -185,7 +198,8 @@
  	    (local-set-key (kbd "C-h <SPC>") 'eldoc-doc-buffer)))
 
 ;;;  Fortran
-; First need to do this: pip3 install fortls
+;; First need to do this: pip3 install fortls
+;; If the above does not work, try sudo apt install fortran-language-server on debian-based systems
 (add-hook 'f90-mode-hook #'lsp-deferred)
 
 ;;; Julia
@@ -208,7 +222,7 @@
 (add-hook 'c++-mode-hook 'lsp #'lsp-deferred)
 
 ;; Python lsp using lsp-mode
-; Need to do this: pip3 install python-lsp-server
+; First need to do this: pip3 install python-lsp-server
 ;(add-hook 'python-mode-hook #'lsp-deferred)
 
 ;;; Python lsp using company+eglot
@@ -233,3 +247,17 @@
 ;;; How to create an environment: python3 -m venv ~/python3-workspace/virtualenv
 ;(package-install 'pyvenv)
 ;(pyvenv-activate "~/python3-workspace/virtualenv/")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(modus-vivendi))
+ '(package-selected-packages
+   '(yasnippet use-package quelpa org-bullets lsp-julia doom-modeline company auctex)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
