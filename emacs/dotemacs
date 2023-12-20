@@ -79,8 +79,8 @@
 ;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
 ;;(set-frame-parameter (selected-frame) 'alpha <both>)
-(set-frame-parameter (selected-frame) 'alpha '(85 . 70))
-(add-to-list 'default-frame-alist '(alpha . (85 . 70)))
+(set-frame-parameter (selected-frame) 'alpha '(90 . 70))
+(add-to-list 'default-frame-alist '(alpha . (90 . 70)))
 (defun toggle-transparency ()
   ;; Toggle transparency
   (interactive)
@@ -130,6 +130,7 @@
   :init (beacon-mode 1))
 (setq beacon-color "#237fd2")
 
+
 ;; Show a pulse light when switching windows, or switching focus to
 ;; the minibuffer.
 ;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
@@ -141,6 +142,11 @@
               (pulse-momentary-highlight-one-line))))
 
 ;;;;;;;;;;;;;;;;;; end visual jazz ;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;; begin magit stuff ;;;;;;;;;;;;;;;;;;
+(use-package magit
+  :ensure t)
+;;;;;;;;;;;;;;;;;; end magit stuff ;;;;;;;;;;;;;;;;;;
 
 ;; org-mode mode related config
 (setq org-ellipsis "⤦")
@@ -247,6 +253,9 @@
 ;;; How to create an environment: python3 -m venv ~/python3-workspace/virtualenv
 ;(package-install 'pyvenv)
 ;(pyvenv-activate "~/python3-workspace/virtualenv/")
+
+;;;;;;;;;;;;;;; begin off-limits ;;;;;;;;;;;;;;; 
+;; Don't touch the stuff below:
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -254,10 +263,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-vivendi))
  '(package-selected-packages
-   '(yasnippet use-package quelpa org-bullets lsp-julia doom-modeline company auctex)))
+   '(magit yasnippet use-package quelpa org-bullets lsp-julia doom-modeline company auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+;;;;;;;;;;;;;;; end off-limits ;;;;;;;;;;;;;;;
