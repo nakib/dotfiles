@@ -130,7 +130,6 @@
   :init (beacon-mode 1))
 (setq beacon-color "#237fd2")
 
-
 ;; Show a pulse light when switching windows, or switching focus to
 ;; the minibuffer.
 ;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
@@ -142,6 +141,13 @@
               (pulse-momentary-highlight-one-line))))
 
 ;;;;;;;;;;;;;;;;;; end visual jazz ;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;; begin my shortcuts ;;;;;;;;;;;;;;;;
+
+;; Copy text on the current line without preceding whitespace, if any.
+(global-set-key (kbd "C-c c l") (kbd "M-a C-SPC C-e M-w"))
+
+;;;;;;;;;;;;;;;;;; end my shortcuts ;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;; begin magit stuff ;;;;;;;;;;;;;;;;;;
 (use-package magit
