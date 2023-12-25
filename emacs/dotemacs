@@ -145,7 +145,14 @@
 ;;;;;;;;;;;;;;;;;; begin my shortcuts ;;;;;;;;;;;;;;;;
 
 ;; Copy text on the current line without preceding whitespace, if any.
-(global-set-key (kbd "C-c c l") (kbd "M-a C-SPC C-e M-w"))
+;; Mnemonic: (c)opy (l)ine
+(global-set-key (kbd "C-c c l") (kbd "M-m C-SPC C-e M-w"))
+
+;; Kill current line without preceding whitespace, if any.
+;; This is similar to C-S-backspace = (kill-whole-line), but without the whitespace
+;; and without deleting the line and creating a new line.
+;; Mnemonic (k)ill (l)ine
+(global-set-key (kbd "C-c k l") (kbd "M-m C-k"))
 
 ;;;;;;;;;;;;;;;;;; end my shortcuts ;;;;;;;;;;;;;;;;
 
