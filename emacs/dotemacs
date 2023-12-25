@@ -53,58 +53,6 @@
 ;; Highlight matcing parens
 (show-paren-mode 1)
 
-;; Go to address at point
-(global-set-key (kbd "C-c <RET>") 'goto-address-at-point)
-
-;; Allow overwriting region by selecting and inserting text
-(delete-selection-mode 1)
-
-;; Jump to last cursor location when file is opened
-(save-place-mode 1)
-
-;; Enable recent file mode and set shortcut
-(recentf-mode 1)
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
-
-;; Enable Hippie-exapand and replace M-/ to call it instead of dynamic expand
-(global-set-key (kbd "M-/") 'hippie-expand)
-
-;; Enable case-insensitive search
-(setq case-fold-search t)
-
-;; Set theme
-;; Did this by invoking M-x customize-themes and choosing the modus-vivendi theme.
-
-;; Set default transparency which can be toggled with C-c t
-;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
-;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
-;;(set-frame-parameter (selected-frame) 'alpha <both>)
-(set-frame-parameter (selected-frame) 'alpha '(90 . 70))
-(add-to-list 'default-frame-alist '(alpha . (90 . 70)))
-(defun toggle-transparency ()
-  ;; Toggle transparency
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-                    ((numberp (cdr alpha)) (cdr alpha))
-                    ;; Also handle undocumented (<active> <inactive>) form.
-                    ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         '(85 . 50) '(100 . 100)))))
-(global-set-key (kbd "C-c t") 'toggle-transparency)
-
-;; Set default tmp file directory
-(setq backup-directory-alist 
-      '(("." . "~/.emacs.d/file-backups")))
-
-;; Define shortcuts for window resize
-(global-set-key (kbd "C-c <C-left>") 'shrink-window-horizontally)
-(global-set-key (kbd "C-c <C-right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "C-c <C-down>") 'shrink-window)
-(global-set-key (kbd "C-c <C-up>") 'enlarge-window)
-
 ;; Nerd icons
 ;; Source: https://github.com/rainstormstudio/nerd-icons.el
 ;; Need to install the fonts first by saying:
@@ -137,10 +85,57 @@
 (set-face-attribute 'pulse-highlight-start-face nil :background beacon-color)
 (add-hook 'window-selection-change-functions
           (lambda (frame)
-            (when (eq frame (selected-frame))
+            (when (eq frame (selected-frame))	      
               (pulse-momentary-highlight-one-line))))
 
 ;;;;;;;;;;;;;;;;;; end visual jazz ;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;; begin behavior ;;;;;;;;;;;;;;;;;;
+
+;; Go to address at point
+(global-set-key (kbd "C-c <RET>") 'goto-address-at-point)
+
+;; Allow overwriting region by selecting and inserting text
+(delete-selection-mode 1)
+
+;; Jump to last cursor location when file is opened
+(save-place-mode 1)
+
+;; Enable recent file mode and set shortcut
+(recentf-mode 1)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+
+;; Enable Hippie-exapand and replace M-/ to call it instead of dynamic expand
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+;; Enable case-insensitive search
+(setq case-fold-search t)
+
+;; Set default transparency which can be toggled with C-c t
+;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(90 . 70))
+(add-to-list 'default-frame-alist '(alpha . (90 . 70)))
+(defun toggle-transparency ()
+  ;; Toggle transparency
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
+
+;; Set default tmp file directory
+(setq backup-directory-alist 
+      '(("." . "~/.emacs.d/file-backups")))
+
+;;;;;;;;;;;;;;;;;; end behavior ;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;; begin my shortcuts ;;;;;;;;;;;;;;;;
 
@@ -153,6 +148,24 @@
 ;; and without deleting the line and creating a new line.
 ;; Mnemonic (k)ill (l)ine
 (global-set-key (kbd "C-c k l") (kbd "M-m C-k"))
+
+;; Jump to top of scope (could be procedure or module definition).
+;; Mnemonic (j)ump ,(US keyboard has < on this button; used , so as not to have to press down shift)
+(global-set-key (kbd "C-c j ,") (kbd "C-M-a"))
+
+;; Jump to end of scope (could be procedure or module definition).
+;; Mnemonic (j)ump .(US keyboard has > on this button; used . so as not to have to press down shift)
+(global-set-key (kbd "C-c j .") (kbd "C-M-e"))
+
+;; Jump to end of the line, create new line, and indent properly.
+;; This essentially does in "normal" modes what C-j does in language modes.
+(global-set-key (kbd "C-<return>") (kbd "C-e <return> <tab>"))
+
+;; Shortcuts for window resize
+(global-set-key (kbd "C-c <C-left>") 'shrink-window-horizontally)
+(global-set-key (kbd "C-c <C-right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "C-c <C-down>") 'shrink-window)
+(global-set-key (kbd "C-c <C-up>") 'enlarge-window)
 
 ;;;;;;;;;;;;;;;;;; end my shortcuts ;;;;;;;;;;;;;;;;
 
