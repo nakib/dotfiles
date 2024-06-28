@@ -92,6 +92,9 @@
 
 ;;;;;;;;;;;;;;;;;; begin behavior ;;;;;;;;;;;;;;;;;;
 
+; Disable the annoying C-z that suspends emacs in the terminal mode                                                                                    
+(global-unset-key (kbd "C-z")) 
+
 ;; Go to address at point
 (global-set-key (kbd "C-c <RET>") 'goto-address-at-point)
 
