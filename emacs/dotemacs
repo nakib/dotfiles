@@ -2,6 +2,13 @@
 ;; https://lists.gnu.org/archive/html/help-gnu-emacs/2020-01/msg00164.html
 ;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+;;On some systems, have to do this little song-n-dance to circumvent
+;;the gpg key issue.
+;;(setq package-check-signature 'nil)
+;;M-x package-refresh-contents RET
+;;M-x package-install RET gnu-elpa-keyring-update RET
+;;(setq package-check-signature 'allow-unsigned)
+
 ;; Set package archives
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
