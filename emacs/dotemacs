@@ -1,14 +1,3 @@
-;; For this bug (on the old emacs v26.1 on SOL45):
-;; https://lists.gnu.org/archive/html/help-gnu-emacs/2020-01/msg00164.html
-;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
-;;On some systems, have to do this little song-n-dance to circumvent
-;;the gpg key issue.
-;;(setq package-check-signature 'nil)
-;;M-x package-refresh-contents RET
-;;M-x package-install RET gnu-elpa-keyring-update RET
-;;(setq package-check-signature 'allow-unsigned)
-
 ;; Set package archives
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
@@ -26,12 +15,12 @@
    (setq use-package-always-ensure t)
    (require 'use-package)))
 
-;; Get quelpa [https://github.com/quelpa/quelpa]
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
+;;;; Get quelpa [https://github.com/quelpa/quelpa]
+;;(unless (package-installed-p 'quelpa)
+;;  (with-temp-buffer
+;;    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+;;    (eval-buffer)
+;;    (quelpa-self-upgrade)))
 
 ;;;;;;;;;;;;;;;;;; begin visual jazz ;;;;;;;;;;;;;;;;;;
 
@@ -62,15 +51,15 @@
 
 ;; Nerd icons
 ;; Source: https://github.com/rainstormstudio/nerd-icons.el
-;; Need to install the fonts first by saying:
-;; M-x package-install nerd-icons-install-fonts
+;; Need to install the fonts first by saying from nerd fonts:
+;; https://www.nerdfonts.com/font-downloads
 (use-package nerd-icons
   :ensure t
   ;; :custom
   ;; The Nerd Font you want to use in GUI
   ;; "Symbols Nerd Font Mono" is the default and is recommended
   ;; but you can use any other Nerd Font if you want
-  ;; (nerd-icons-font-family "Symbols Nerd Font Mono")
+  ;; nerd-icons-font-family "Symbols Nerd Font Mono")
   )
 
 ;; Doom modeline
@@ -99,7 +88,7 @@
 
 ;;;;;;;;;;;;;;;;;; begin behavior ;;;;;;;;;;;;;;;;;;
 
-; Disable the annoying C-z that suspends emacs in the terminal mode                                                                                    
+; Disable the annoying C-z that suspends emacs in the terminal mode
 (global-unset-key (kbd "C-z")) 
 
 ;; Go to address at point
@@ -252,13 +241,13 @@
 (yas-global-mode 1)
 
 ;; Paraedit
-(use-package paredit
-  :ensure t
-  :config
-  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
-  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-  (add-hook 'racket-mode-hook 'enable-paredit-mode))
+;;(use-package paredit
+;;  :ensure t
+;;  :config
+;;  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+;;  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+;;  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+;;  (add-hook 'racket-mode-hook 'enable-paredit-mode))
 
 ;; Colorizes delimiters so they can be told apart
 (use-package rainbow-delimiters
@@ -266,7 +255,8 @@
   :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 ;; LSP common settings
-(require 'lsp-mode)
+(use-package lsp-mode
+  :ensure t)
 (setq lsp-eldoc-render-all t)
 ;;  Set shortcut for M-x eldoc-doc-buffer
 (add-hook 'lsp-mode-hook
@@ -280,25 +270,25 @@
 
 ;;; Julia
 ;; Instructions from https://hershsingh.net/blog/emacs-julia/
-(quelpa '(lsp-julia :fetcher github
-                    :repo "non-Jedi/lsp-julia"
-                    :files (:defaults "languageserver")))
-
-(use-package lsp-julia
-  :config
-  (setq lsp-julia-default-environment "~/.julia/environments/v1.9.2")
-  (add-hook 'julia-mode-hook #'lsp-deferred))
-
-;;Racket
-(use-package racket-mode
-  :ensure t)
+;;(quelpa '(lsp-julia :fetcher github
+;;                    :repo "non-Jedi/lsp-julia"
+;;                    :files (:defaults "languageserver")))
+;;
+;;(use-package lsp-julia
+;;  :config
+;;  (setq lsp-julia-default-environment "~/.julia/environments/v1.9.2")
+;;  (add-hook 'julia-mode-hook #'lsp-deferred))
+;;
+;;;;Racket
+;;(use-package racket-mode
+;;  :ensure t)
 
 ;;; C/C++
 ; First need to install:
 ; sudo apt-get install clangd-15
 ; sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-15 100
-(add-hook 'c-mode-hook 'lsp #'lsp-deferred)
-(add-hook 'c++-mode-hook 'lsp #'lsp-deferred)
+;;(add-hook 'c-mode-hook 'lsp #'lsp-deferred)
+;;(add-hook 'c++-mode-hook 'lsp #'lsp-deferred)
 
 ;; Python lsp using lsp-mode
 ; First need to do this: pip3 install python-lsp-server
@@ -326,9 +316,6 @@
 ;;; How to create an environment: python3 -m venv ~/python3-workspace/virtualenv
 ;(package-install 'pyvenv)
 ;(pyvenv-activate "~/python3-workspace/virtualenv/")
-
-;;;;;;;;;;;;;;; begin off-limits ;;;;;;;;;;;;;;; 
-;; Don't touch the stuff below:
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -336,11 +323,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-vivendi))
  '(package-selected-packages
-   '(rainbow-delimiters paredit racket-mode magit yasnippet use-package quelpa org-bullets lsp-julia doom-modeline company auctex)))
+   '(lsp-mode rainbow-delimiters yasnippet company auctex org-bullets magit beacon doom-modeline nerd-icons)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-;;;;;;;;;;;;;;; end off-limits ;;;;;;;;;;;;;;;
