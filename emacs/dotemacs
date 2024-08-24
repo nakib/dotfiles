@@ -1,3 +1,10 @@
+;On some systems, (like Ubuntu 23.04) have to do this little song-n-dance to circumvent
+;;the gpg key issue. This is not an issue in newer versions.
+;;(setq package-check-signature 'nil)
+;;M-x package-refresh-contents RET
+;;M-x package-install RET gnu-elpa-keyring-update RET
+;;(setq package-check-signature 'allow-unsigned)
+
 ;; Set package archives
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
@@ -49,18 +56,27 @@
 ;; Highlight matcing parens
 (show-paren-mode 1)
 
-;; Nerd icons
-;; Source: https://github.com/rainstormstudio/nerd-icons.el
-;; Need to install the fonts first by saying from nerd fonts:
-;; https://www.nerdfonts.com/font-downloads
-(use-package nerd-icons
+;; Spacious padding
+(use-package spacious-padding
   :ensure t
-  ;; :custom
-  ;; The Nerd Font you want to use in GUI
-  ;; "Symbols Nerd Font Mono" is the default and is recommended
-  ;; but you can use any other Nerd Font if you want
-  ;; nerd-icons-font-family "Symbols Nerd Font Mono")
-  )
+  :hook (after-init . spacious-padding-mode))
+
+;;;; Nerd icons
+;;;; Source: https://github.com/rainstormstudio/nerd-icons.el
+;;;; Need to install the fonts first by saying:
+;;;; M-x package-install nerd-icons-install-fonts
+;;(use-package nerd-icons
+;;  :ensure t
+;;  ;; :custom
+;;  ;; The Nerd Font you want to use in GUI
+;;  ;; "Symbols Nerd Font Mono" is the default and is recommended
+;;  ;; but you can use any other Nerd Font if you want
+;;  ;; (nerd-icons-font-family "Symbols Nerd Font Mono")
+;;  )
+
+;; All the icons
+(use-package all-the-icons
+  :ensure t)
 
 ;; Doom modeline
 ;; Source https://github.com/seagle0128/doom-modeline
@@ -83,6 +99,20 @@
           (lambda (frame)
             (when (eq frame (selected-frame))	      
               (pulse-momentary-highlight-one-line))))
+
+(use-package golden-ratio
+  :ensure t
+  :init (golden-ratio-mode 1))
+
+;; Toggle golden ratio mode
+(global-set-key (kbd "C-c g r") 'golden-ratio-mode)
+
+;; Solaire
+;; Visually distiguishes buffers related to a file from those that are not,
+;; like shells and stuff.
+(use-package solaire-mode
+  :ensure t
+  :hook (after-init . solaire-global-mode))
 
 ;;;;;;;;;;;;;;;;;; end visual jazz ;;;;;;;;;;;;;;;;;;
 
