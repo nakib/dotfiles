@@ -164,6 +164,13 @@
 (setq backup-directory-alist 
       '(("." . "~/.emacs.d/file-backups")))
 
+;; Frog-jump-buffer
+(use-package frog-jump-buffer
+  :ensure t)
+
+;; Lauch frog-jump-buffer
+(global-set-key (kbd "C-c b") 'frog-jump-buffer)
+
 ;;;;;;;;;;;;;;;;;; end behavior ;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;; begin my shortcuts ;;;;;;;;;;;;;;;;
