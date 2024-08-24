@@ -50,6 +50,12 @@
 ;; Remove menu bar
 (menu-bar-mode 0)
 
+;;(setq-default left-margin-width 0 right-margin-width 0)
+;;(set-window-buffer nil (current-buffer))
+
+;; Add a gentle gray color to the vertical border between windows
+(set-face-foreground 'vertical-border "gray")
+
 ;; Stop cursor for blinking
 (blink-cursor-mode 0)
 
