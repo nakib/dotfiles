@@ -44,6 +44,12 @@
 ;; Remove tool bar
 (tool-bar-mode 0)
 
+;; Remove scroll bar
+(scroll-bar-mode 0)
+
+;; Remove menu bar
+(menu-bar-mode 0)
+
 ;; Stop cursor for blinking
 (blink-cursor-mode 0)
 
@@ -56,10 +62,13 @@
 ;; Highlight matcing parens
 (show-paren-mode 1)
 
-;; Spacious padding
-(use-package spacious-padding
-  :ensure t
-  :hook (after-init . spacious-padding-mode))
+;;;; Spacious padding
+;;(use-package spacious-padding
+;;  :ensure t
+;;  :init (spacious-padding-mode 0))
+;;
+;;;; Toggle spacious-padding-mode
+;;(global-set-key (kbd "<f12>") 'spacious-padding-mode)
 
 ;;;; Nerd icons
 ;;;; Source: https://github.com/rainstormstudio/nerd-icons.el
