@@ -98,7 +98,7 @@ Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set 
   ;(whitespace-mode 1)
 
   ;; Display line numbers
-  (display-line-numbers-mode 1) 
+  (global-display-line-numbers-mode 1)
   ;;(setq display-line-numbers 'relative)
 
   ;;;; Spacious padding
