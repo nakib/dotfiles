@@ -4,9 +4,11 @@
 
 * How to use this file
 In your ~.emacs~ file, add the following two lines and restart emacs.
-(package-initialize)
-(org-babel-load-file "<path to where you kept this file>/config.org")
 
+#+begin_src emacs-lisp :tangle no
+  (package-initialize)
+  (org-babel-load-file "<path to where you kept this file>/config.org")
+#+end_src
 
 * Repo setup
 #+begin_src emacs-lisp
@@ -30,6 +32,12 @@ In your ~.emacs~ file, add the following two lines and restart emacs.
   ;;    (quelpa-self-upgrade)))
 #+end_src
 
+* Set custom file
+Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set a different file.
+#+begin_src emacs-lisp :tangle no
+  (setq custom-file "~/.emacs-custom.el")
+  (load custom-file 'noerror)
+#+end_src
 
 * Set up use-package
 #+begin_src emacs-lisp
@@ -86,6 +94,13 @@ In your ~.emacs~ file, add the following two lines and restart emacs.
   ;; Highlight matcing parens
   (show-paren-mode 1)
 
+  ;; Turn on whitespace-mode by default
+  ;(whitespace-mode 1)
+
+  ;; Display line numbers
+  (display-line-numbers-mode 1) 
+  ;;(setq display-line-numbers 'relative)
+
   ;;;; Spacious padding
   ;;(use-package spacious-padding
   ;;  :ensure t
@@ -104,7 +119,7 @@ In your ~.emacs~ file, add the following two lines and restart emacs.
 	(shell-command "unzip NerdFontsSymbolsOnly.zip -d NerdFontsSymbolsOnly")
 	(shell-command "mkdir -p ~/.local/share/fonts")
 	(shell-command "cp NerdFontsSymbolsOnly/*ttf ~/.local/share/fonts"))))
-  
+
 
   ;;;; Nerd icons
   ;;;; Source: https://github.com/rainstormstudio/nerd-icons.el
@@ -130,7 +145,8 @@ In your ~.emacs~ file, add the following two lines and restart emacs.
   (use-package beacon
     :ensure t
     :init (beacon-mode 1))
-  (setq beacon-color "#237fd2")
+  ;;(setq beacon-color "#237fd2") ;blue
+  (setq beacon-color "#eb4034") ;red
 
   ;; Show a pulse light when switching windows, or switching focus to the minibuffer.
   ;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
@@ -172,7 +188,6 @@ In your ~.emacs~ file, add the following two lines and restart emacs.
     ;; Corrects (and improves) org-mode's native fontification.
     (doom-themes-org-config))
 #+end_src
-
 
 * Behavior and custom shortcuts
 #+begin_src emacs-lisp
