@@ -34,9 +34,10 @@ In your ~.emacs~ file, add the following two lines and restart emacs.
 
 * Set custom file
 Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set a different file.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
+  (shell-command "test -f ~/.emacs-custom.el || touch ~/.emacs-custom.el")
   (setq custom-file "~/.emacs-custom.el")
-  (load custom-file 'noerror)
+  (load custom-file)
 #+end_src
 
 * Set up use-package
