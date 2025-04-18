@@ -1,283 +1,254 @@
-#+STARTUP: overview
-#+TITLE: My Emacs config
-#+OPTIONS: num:nil
+;;On some systems, (like Ubuntu 23.04) have to do this little song-n-dance to circumvent
+;;the gpg key issue. This is not an issue in newer versions of emacs.
+;;(setq package-check-signature 'nil)
+;;M-x package-refresh-contents RET
+;;M-x package-install RET gnu-elpa-keyring-update RET
+;;(setq package-check-signature 'allow-unsigned)
 
-* How to use this file
-In your ~.emacs~ file, add the following two lines and restart emacs.
+;; Set package archives
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+			 ("melpa" . "https://melpa.org/packages/")
+			 ("melpa-stable" . "https://stable.melpa.org/packages/")))
 
-#+begin_src emacs-lisp :tangle no
-  (package-initialize)
-  (org-babel-load-file "<path to where you kept this file>/config.org")
-#+end_src
+;; Get quelpa [https://github.com/quelpa/quelpa]
+;;(unless (package-installed-p 'quelpa)
+;;  (with-temp-buffer
+;;    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+;;    (eval-buffer)
+;;    (quelpa-self-upgrade)))
 
-* Repo setup
-#+begin_src emacs-lisp
-  ;;On some systems, (like Ubuntu 23.04) have to do this little song-n-dance to circumvent
-  ;;the gpg key issue. This is not an issue in newer versions of emacs.
-  ;;(setq package-check-signature 'nil)
-  ;;M-x package-refresh-contents RET
-  ;;M-x package-install RET gnu-elpa-keyring-update RET
-  ;;(setq package-check-signature 'allow-unsigned)
+(shell-command "test -f ~/.emacs-custom.el || touch ~/.emacs-custom.el")
+(setq custom-file "~/.emacs-custom.el")
+(load custom-file)
 
-  ;; Set package archives
-  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			   ("melpa" . "https://melpa.org/packages/")
-			   ("melpa-stable" . "https://stable.melpa.org/packages/")))
+;; Make sure use-package is always used
+;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
+(condition-case nil
+    (require 'use-package)
+  (file-error
+   (require 'package)
+   (package-initialize)
+   (package-refresh-contents)
+   (package-install 'use-package)
+   (setq use-package-always-ensure t)
+   (require 'use-package)))
 
-  ;; Get quelpa [https://github.com/quelpa/quelpa]
-  ;;(unless (package-installed-p 'quelpa)
-  ;;  (with-temp-buffer
-  ;;    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-  ;;    (eval-buffer)
-  ;;    (quelpa-self-upgrade)))
-#+end_src
+;; Don't show startup screen
+(setq inhibit-startup-screen t)
 
-* Set custom file
-Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set a different file.
-#+begin_src emacs-lisp
-  (shell-command "test -f ~/.emacs-custom.el || touch ~/.emacs-custom.el")
-  (setq custom-file "~/.emacs-custom.el")
-  (load custom-file)
-#+end_src
+;; Set scratch buffer message
+(setq initial-scratch-message
+      ";; This is your scratch space. Nothing here will be saved. Go nuts!!\n")
 
-* Set up use-package
-#+begin_src emacs-lisp
-  ;; Make sure use-package is always used
-  ;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
-  (condition-case nil
-      (require 'use-package)
-    (file-error
-     (require 'package)
-     (package-initialize)
-     (package-refresh-contents)
-     (package-install 'use-package)
-     (setq use-package-always-ensure t)
-     (require 'use-package)))
-#+end_src
+;; Set zoom level
+(set-face-attribute 'default nil :height 148)
 
+;; Remove title bar
+;;(add-to-list 'default-frame-alist '(undecorated . t))
 
-* Look & feel
-#+begin_src emacs-lisp
-  ;; Don't show startup screen
-  (setq inhibit-startup-screen t)
+;; Remove tool bar
+(tool-bar-mode 0)
 
-  ;; Set scratch buffer message
-  (setq initial-scratch-message
-	";; This is your scratch space. Nothing here will be saved. Go nuts!!\n")
+;; Remove scroll bar
+(scroll-bar-mode 0)
 
-  ;; Set zoom level
-  (set-face-attribute 'default nil :height 148)
+;; Remove menu bar
+(menu-bar-mode 0)
 
-  ;; Remove tool bar
-  (tool-bar-mode 0)
+;;(setq-default left-margin-width 0 right-margin-width 0)
+;;(set-window-buffer nil (current-buffer))
 
-  ;; Remove scroll bar
-  (scroll-bar-mode 0)
+;; Add a gentle gray color to the vertical border between windows
+(set-face-foreground 'vertical-border "gray")
 
-  ;; Remove menu bar
-  (menu-bar-mode 0)
+;; Stop cursor for blinking
+(blink-cursor-mode 0)
 
-  ;;(setq-default left-margin-width 0 right-margin-width 0)
-  ;;(set-window-buffer nil (current-buffer))
+;; Show both row and column numbers at the bottom in the mode line
+(column-number-mode 1)
 
-  ;; Add a gentle gray color to the vertical border between windows
-  (set-face-foreground 'vertical-border "gray")
+;; Nice line wrap
+(global-visual-line-mode 1)
 
-  ;; Stop cursor for blinking
-  (blink-cursor-mode 0)
+;; Highlight matcing parens
+(show-paren-mode 1)
 
-  ;; Show both row and column numbers at the bottom in the mode line
-  (column-number-mode 1)
+;; Turn on whitespace-mode by default
+;(whitespace-mode 1)
 
-  ;; Nice line wrap
-  (global-visual-line-mode 1)
+;; Display line numbers
+(global-display-line-numbers-mode 1)
+;;(setq display-line-numbers-type 'relative)
 
-  ;; Highlight matcing parens
-  (show-paren-mode 1)
+;;;; Spacious padding
+;;(use-package spacious-padding
+;;  :ensure t
+;;  :init (spacious-padding-mode 0))
+;;
+;;;; Toggle spacious-padding-mode
+;;(global-set-key (kbd "<f12>") 'spacious-padding-mode)
 
-  ;; Turn on whitespace-mode by default
-  ;(whitespace-mode 1)
-
-  ;; Display line numbers
-  (global-display-line-numbers-mode 1)
-  ;;(setq display-line-numbers-type 'relative)
-
-  ;;;; Spacious padding
-  ;;(use-package spacious-padding
-  ;;  :ensure t
-  ;;  :init (spacious-padding-mode 0))
-  ;;
-  ;;;; Toggle spacious-padding-mode
-  ;;(global-set-key (kbd "<f12>") 'spacious-padding-mode)
-
-  ;; Install Symbols Nerd Font unless I already have it
-  (if (file-exists-p "~/.local/share/fonts/SymbolsNerdFontMono-Regular.ttf")
-      (message "~/.local/share/fonts/SymbolsNerdFontMono-Regular.ttf already exists.")
-    (progn
-      (message "Downloading NerdFontsSymbolsOnly")
-      (let ((default-directory "~/Downloads"))
-	(shell-command "wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/NerdFontsSymbolsOnly.zip")
-	(shell-command "unzip NerdFontsSymbolsOnly.zip -d NerdFontsSymbolsOnly")
-	(shell-command "mkdir -p ~/.local/share/fonts")
-	(shell-command "cp NerdFontsSymbolsOnly/*ttf ~/.local/share/fonts"))))
+;; Install Symbols Nerd Font unless I already have it
+(if (file-exists-p "~/.local/share/fonts/SymbolsNerdFontMono-Regular.ttf")
+    (message "~/.local/share/fonts/SymbolsNerdFontMono-Regular.ttf already exists.")
+  (progn
+    (message "Downloading NerdFontsSymbolsOnly")
+    (let ((default-directory "~/Downloads"))
+      (shell-command "wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/NerdFontsSymbolsOnly.zip")
+      (shell-command "unzip NerdFontsSymbolsOnly.zip -d NerdFontsSymbolsOnly")
+      (shell-command "mkdir -p ~/.local/share/fonts")
+      (shell-command "cp NerdFontsSymbolsOnly/*ttf ~/.local/share/fonts"))))
 
 
-  ;;;; Nerd icons
-  ;;;; Source: https://github.com/rainstormstudio/nerd-icons.el
-  (use-package nerd-icons
-    :ensure t
-    :custom
-    ;; The Nerd Font you want to use in GUI
-    ;; "Symbols Nerd Font Mono" is the default and is recommended
-    ;; but you can use any other Nerd Font if you want
-    (nerd-icons-font-family "Symbols Nerd Font Mono"))
+;;;; Nerd icons
+;;;; Source: https://github.com/rainstormstudio/nerd-icons.el
+(use-package nerd-icons
+  :ensure t
+  :custom
+  ;; The Nerd Font you want to use in GUI
+  ;; "Symbols Nerd Font Mono" is the default and is recommended
+  ;; but you can use any other Nerd Font if you want
+  (nerd-icons-font-family "Symbols Nerd Font Mono"))
 
-  ;; All the icons
-  (use-package all-the-icons
-    :ensure t)
+;; All the icons
+(use-package all-the-icons
+  :ensure t)
 
-  ;; Doom modeline
-  ;; Source https://github.com/seagle0128/doom-modeline
-  (use-package doom-modeline
-    :ensure t
-    :init (doom-modeline-mode 1))
+;; Doom modeline
+;; Source https://github.com/seagle0128/doom-modeline
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
 
-  ;; Beacon mode
-  (use-package beacon
-    :ensure t
-    :init (beacon-mode 1))
-  ;;(setq beacon-color "#237fd2") ;blue
-  (setq beacon-color "#eb4034") ;red
+;; Beacon mode
+(use-package beacon
+  :ensure t
+  :init (beacon-mode 1))
+;;(setq beacon-color "#237fd2") ;blue
+(setq beacon-color "#eb4034") ;red
 
-  ;; Show a pulse light when switching windows, or switching focus to the minibuffer.
-  ;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
-  (require 'pulse)
-  (set-face-attribute 'pulse-highlight-start-face nil :background beacon-color)
-  (add-hook 'window-selection-change-functions
-	    (lambda (frame)
-	      (when (eq frame (selected-frame))	      
-		(pulse-momentary-highlight-one-line))))
+;; Show a pulse light when switching windows, or switching focus to the minibuffer.
+;; Source: https://gitlab.com/skybert/my-little-friends/-/blob/master/emacs/.emacs
+(require 'pulse)
+(set-face-attribute 'pulse-highlight-start-face nil :background beacon-color)
+(add-hook 'window-selection-change-functions
+	  (lambda (frame)
+	    (when (eq frame (selected-frame))	      
+	      (pulse-momentary-highlight-one-line))))
 
-  (use-package golden-ratio
-    :ensure t
-    :init (golden-ratio-mode 1))
+(use-package golden-ratio
+  :ensure t
+  :init (golden-ratio-mode 1))
 
-  ;; Toggle golden ratio mode
-  (global-set-key (kbd "C-c g r") 'golden-ratio-mode)
+;; Toggle golden ratio mode
+(global-set-key (kbd "C-c g r") 'golden-ratio-mode)
 
-  ;; Solaire
-  ;; Visually distiguishes buffers related to a file from those that are not, like shells and stuff.
-  (use-package solaire-mode
-    :ensure t
-    :hook (after-init . solaire-global-mode))
+;; Solaire
+;; Visually distiguishes buffers related to a file from those that are not, like shells and stuff.
+(use-package solaire-mode
+  :ensure t
+  :hook (after-init . solaire-global-mode))
 
-  (use-package doom-themes
-    :ensure t
-    :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'modus-vivendi t)
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'modus-vivendi t)
 
-    ;; Enable flashing mode-line on errors
-    (doom-themes-visual-bell-config)
-    ;; Enable custom neotree theme (all-the-icons must be installed!)
-    (doom-themes-neotree-config)
-    ;; or for treemacs users
-    (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
-    (doom-themes-treemacs-config)
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
-#+end_src
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
-* Behavior and custom shortcuts
-#+begin_src emacs-lisp
-  ;; Disable the annoying C-z that suspends emacs in the terminal mode
-  (global-unset-key (kbd "C-z")) 
+;; Disable the annoying C-z that suspends emacs in the terminal mode
+(global-unset-key (kbd "C-z")) 
 
-  ;; Go to address at point
-  (global-set-key (kbd "C-c <RET>") 'goto-address-at-point)
+;; Go to address at point
+(global-set-key (kbd "C-c <RET>") 'goto-address-at-point)
 
-  ;; Allow overwriting region by selecting and inserting text
-  (delete-selection-mode 1)
+;; Allow overwriting region by selecting and inserting text
+(delete-selection-mode 1)
 
-  ;; Jump to last cursor location when file is opened
-  (save-place-mode 1)
+;; Jump to last cursor location when file is opened
+(save-place-mode 1)
 
-  ;; Enable recent file mode and set shortcut
-  (recentf-mode 1)
-  (global-set-key (kbd "C-x C-r") 'recentf-open-files)
+;; Enable recent file mode and set shortcut
+(recentf-mode 1)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
 
-  ;; Enable Hippie-exapand and replace M-/ to call it instead of dynamic expand
-  (global-set-key (kbd "M-/") 'hippie-expand)
+;; Enable Hippie-exapand and replace M-/ to call it instead of dynamic expand
+(global-set-key (kbd "M-/") 'hippie-expand)
 
-  ;; Enable case-insensitive search
-  (setq case-fold-search t)
+;; Enable case-insensitive search
+(setq case-fold-search t)
 
-  ;; Set default transparency which can be toggled with C-c t
-  ;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
-  ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
-  ;;(set-frame-parameter (selected-frame) 'alpha <both>)
-  (set-frame-parameter (selected-frame) 'alpha '(90 . 70))
-  (add-to-list 'default-frame-alist '(alpha . (90 . 70)))
-  (defun toggle-transparency ()
-    ;; Toggle transparency
-    (interactive)
-    (let ((alpha (frame-parameter nil 'alpha)))
-      (set-frame-parameter
-       nil 'alpha
-       (if (eql (cond ((numberp alpha) alpha)
-		      ((numberp (cdr alpha)) (cdr alpha))
-		      ;; Also handle undocumented (<active> <inactive>) form.
-		      ((numberp (cadr alpha)) (cadr alpha)))
-		100)
-	   '(85 . 50) '(100 . 100)))))
-  (global-set-key (kbd "C-c t") 'toggle-transparency)
+;; Set default transparency which can be toggled with C-c t
+;; Source: https://www.emacswiki.org/emacs/TransparentEmacs
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(95 . 90))
+(add-to-list 'default-frame-alist '(alpha . (95 . 90)))
+(defun toggle-transparency ()
+  ;; Toggle transparency
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+		    ((numberp (cdr alpha)) (cdr alpha))
+		    ;; Also handle undocumented (<active> <inactive>) form.
+		    ((numberp (cadr alpha)) (cadr alpha)))
+	      100)
+	 '(95 . 90) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
 
-  ;; Set default tmp file directory
-  (setq backup-directory-alist 
-	'(("." . "~/.emacs.d/file-backups")))
+;; Set default tmp file directory
+(setq backup-directory-alist 
+      '(("." . "~/.emacs.d/file-backups")))
 
-  ;; Frog-jump-buffer
-  (use-package frog-jump-buffer
-    :ensure t)
+;; Frog-jump-buffer
+(use-package frog-jump-buffer
+  :ensure t)
 
-  ;; Lauch frog-jump-buffer
-  (global-set-key (kbd "C-c b") 'frog-jump-buffer)
+;; Lauch frog-jump-buffer
+(global-set-key (kbd "C-c b") 'frog-jump-buffer)
 
-  ;; Copy text on the current line without preceding whitespace, if any.
-  ;; Mnemonic: (c)opy (l)ine
-  (global-set-key (kbd "C-c c l") (kbd "M-m C-SPC C-e M-w"))
+;; Copy text on the current line without preceding whitespace, if any.
+;; Mnemonic: (c)opy (l)ine
+(global-set-key (kbd "C-c c l") (kbd "M-m C-SPC C-e M-w"))
 
-  ;; Kill current line without preceding whitespace, if any.
-  ;; This is similar to C-S-backspace = (kill-whole-line), but without the whitespace
-  ;; and without deleting the line and creating a new line.
-  ;; Mnemonic (k)ill (l)ine
-  (global-set-key (kbd "C-c k l") (kbd "M-m C-k"))
+;; Kill current line without preceding whitespace, if any.
+;; This is similar to C-S-backspace = (kill-whole-line), but without the whitespace
+;; and without deleting the line and creating a new line.
+;; Mnemonic (k)ill (l)ine
+(global-set-key (kbd "C-c k l") (kbd "M-m C-k"))
 
-  ;; Jump to top of scope (could be procedure or module definition).
-  ;; Mnemonic (j)ump ,(US keyboard has < on this button; used , so as not to have to press down shift)
-  (global-set-key (kbd "C-c j ,") (kbd "C-M-a"))
+;; Jump to top of scope (could be procedure or module definition).
+;; Mnemonic (j)ump ,(US keyboard has < on this button; used , so as not to have to press down shift)
+(global-set-key (kbd "C-c j ,") (kbd "C-M-a"))
 
-  ;; Jump to end of scope (could be procedure or module definition).
-  ;; Mnemonic (j)ump .(US keyboard has > on this button; used . so as not to have to press down shift)
-  (global-set-key (kbd "C-c j .") (kbd "C-M-e"))
+;; Jump to end of scope (could be procedure or module definition).
+;; Mnemonic (j)ump .(US keyboard has > on this button; used . so as not to have to press down shift)
+(global-set-key (kbd "C-c j .") (kbd "C-M-e"))
 
-  ;; Jump to end of the line, create new line, and indent properly.
-  ;; This essentially does in "normal" modes what C-j does in language modes.
-  (global-set-key (kbd "C-<return>") (kbd "C-e <return> <tab>"))
+;; Jump to end of the line, create new line, and indent properly.
+;; This essentially does in "normal" modes what C-j does in language modes.
+(global-set-key (kbd "C-<return>") (kbd "C-e <return> <tab>"))
 
-  ;; Shortcuts for window resize
-  (global-set-key (kbd "C-c <C-left>") 'shrink-window-horizontally)
-  (global-set-key (kbd "C-c <C-right>") 'enlarge-window-horizontally)
-  (global-set-key (kbd "C-c <C-down>") 'shrink-window)
-  (global-set-key (kbd "C-c <C-up>") 'enlarge-window)
-#+end_src
+;; Shortcuts for window resize
+(global-set-key (kbd "C-c <C-left>") 'shrink-window-horizontally)
+(global-set-key (kbd "C-c <C-right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "C-c <C-down>") 'shrink-window)
+(global-set-key (kbd "C-c <C-up>") 'enlarge-window)
 
-
-* Org-mode stuff
-#+begin_src emacs-lisp
-  (setq org-ellipsis "⤦")
+(setq org-ellipsis "⤦")
   (use-package org-bullets :ensure t)
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
@@ -326,47 +297,39 @@ Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set 
 		     path (or desc "")))
        (latex (format "\href{%s}{%s}"
 		      path (or desc "video"))))))
-#+end_src
 
+;; Colorizes delimiters so they can be told apart
+(use-package rainbow-delimiters
+  :ensure t
+  :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-* Work and development
+;; LSP common settings
+(use-package lsp-mode
+  :ensure t)
+(setq lsp-eldoc-render-all t)
+;;  Set shortcut for M-x eldoc-doc-buffer
+(add-hook 'lsp-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-h <SPC>") 'eldoc-doc-buffer)))
 
-** Rainbow delimiters
-#+begin_src emacs-lisp
-  ;; Colorizes delimiters so they can be told apart
-  (use-package rainbow-delimiters
-    :ensure t
-    :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-#+end_src
+;;  Fortran
+;; First need to do this: pip3 install fortls
+;; If the above does not work, try sudo apt install fortran-language-server on debian-based systems
+(add-hook 'f90-mode-hook #'lsp-deferred)
 
-** LSP
-#+begin_src emacs-lisp
-  ;; LSP common settings
-  (use-package lsp-mode
-    :ensure t)
-  (setq lsp-eldoc-render-all t)
-  ;;  Set shortcut for M-x eldoc-doc-buffer
-  (add-hook 'lsp-mode-hook
-	    (lambda ()
-	      (local-set-key (kbd "C-h <SPC>") 'eldoc-doc-buffer)))
+;;  Julia
+(use-package julia-mode
+  :ensure t)
 
-  ;;  Fortran
-  ;; First need to do this: pip3 install fortls
-  ;; If the above does not work, try sudo apt install fortran-language-server on debian-based systems
-  (add-hook 'f90-mode-hook #'lsp-deferred)
-#+end_src
+;; https://github.com/julia-vscode/LanguageServer.jl/wiki/Emacs
+(use-package eglot-jl
+  :ensure t)
 
-** Company
-#+begin_src emacs-lisp
-  (use-package company
-    :ensure t)
-  (global-company-mode t)
-  (add-hook 'after-init-hook 'global-company-mode)
-#+end_src
+(use-package company
+  :ensure t)
+(global-company-mode t)
+(add-hook 'after-init-hook 'global-company-mode)
 
-** Yasnippet
-#+begin_src emacs-lisp
-  (use-package yasnippet
-    :ensure t)
-  (add-hook 'after-init-hook 'yas-global-mode)
-#+end_src
+(use-package yasnippet
+  :ensure t)
+(add-hook 'after-init-hook 'yas-global-mode)
