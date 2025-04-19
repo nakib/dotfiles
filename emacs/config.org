@@ -272,8 +272,13 @@ Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set 
   (global-set-key (kbd "C-c <C-right>") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-c <C-down>") 'shrink-window)
   (global-set-key (kbd "C-c <C-up>") 'enlarge-window)
-#+end_src
 
+  ;; German letters
+  (global-set-key (kbd "C-c u a") (kbd "C-x 8 \" a"))
+  (global-set-key (kbd "C-c u u") (kbd "C-x 8 \" u"))
+  (global-set-key (kbd "C-c u o") (kbd "C-x 8 \" o"))
+  (global-set-key (kbd "C-c s s") (lambda () (interactive) (insert "ß")))
+#+end_src
 
 * Org-mode stuff
 #+begin_src emacs-lisp
