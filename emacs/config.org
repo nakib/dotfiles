@@ -54,8 +54,7 @@ Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set 
      (setq use-package-always-ensure t)
      (require 'use-package)))
 #+end_src
-
-
+  
 * Look & feel
 #+begin_src emacs-lisp
   ;; Don't show startup screen
@@ -333,7 +332,6 @@ Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set 
 		      path (or desc "video"))))))
 #+end_src
 
-
 * Work and development
 
 ** Rainbow delimiters
@@ -382,4 +380,21 @@ Emacs likes to modify the ~.emacs~ file, which is a problem for me. Here we set 
   (use-package yasnippet
     :ensure t)
   (add-hook 'after-init-hook 'yas-global-mode)
+#+end_src
+
+** Claude code integration
+
+#+begin_src emacs-lisp
+  ;; Need these at the system level: cmake libtool-bin
+
+  (use-package vterm
+    :ensure t)
+
+  (unless (package-installed-p 'claude-code-ide)
+    (package-vc-install "https://github.com/manzaltu/claude-code-ide.el"))
+
+  (use-package claude-code-ide
+    :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+    :config (claude-code-ide-emacs-tools-setup) ; Optionally enable Emacs MCP tools
+    :ensure t)
 #+end_src
